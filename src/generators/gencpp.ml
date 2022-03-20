@@ -8592,7 +8592,7 @@ let generate_source ctx =
 	  if (common_ctx.debug) then cmd := !cmd @ ["-Ddebug"];
       PMap.iter ( fun name value -> match name with
          | "true" | "sys" | "dce" | "cpp" | "debug" -> ();
-         | _ -> cmd := !cmd @ [Printf.sprintf "-D%s=%s" name (escape_command value)];
+         | _ -> cmd := !cmd @ [Printf.sprintf "-D%s=\"%s\"" name (escape_command value)];
       ) common_ctx.defines.values;
       List.iter (fun path -> cmd := !cmd @ [Printf.sprintf "-I%s" (escape_command path)]) common_ctx.class_path;
       common_ctx.print ("haxelib " ^ (String.concat " " !cmd) ^ "\n");
