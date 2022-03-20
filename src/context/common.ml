@@ -322,6 +322,7 @@ type context = {
 	mutable print : string -> unit;
 	mutable get_macros : unit -> context option;
 	mutable run_command : string -> int;
+	mutable run_command_args : string -> string list -> int;
 	file_lookup_cache : (string,string option) Hashtbl.t;
 	file_keys : file_keys;
 	readdir_cache : (string * string,(string array) option) Hashtbl.t;
@@ -702,7 +703,7 @@ let memory_marker = [|Unix.time()|]
 
 let create cs version args =
 	let m = Type.mk_mono() in
-	{
+	let rec com = {
 		cs = cs;
 		cache = None;
 		stage = CCreated;
@@ -728,6 +729,7 @@ let create cs version args =
 		config = default_config;
 		print = (fun s -> print_string s; flush stdout);
 		run_command = Sys.command;
+		run_command_args = (fun s args -> com.run_command (Printf.sprintf "%s %s" s (String.concat " " args)));
 		std_path = [];
 		class_path = [];
 		main_class = None;
@@ -780,7 +782,8 @@ let create cs version args =
 		json_out = None;
 		has_error = false;
 		report_mode = RMNone;
-	}
+	} in
+	com
 
 let is_diagnostics com = match com.report_mode with
 	| RMDiagnostics _ -> true
