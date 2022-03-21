@@ -149,12 +149,14 @@ let rec unify_call_args ctx el args r callp inline force_inline in_overload =
 				| (s,ul,p) :: _ -> arg_error ul s true p
 			end
 		| e :: el,(name,opt,t) :: args ->
+			let might_skip = List.length el < List.length args in
 			begin try
-				let e = type_against name t e in
+				let restore_report_mode = if might_skip then Common.disable_report_mode ctx.com else (fun () -> ()) in
+				let e = Std.finally restore_report_mode (type_against name t) e in
 				e :: loop el args
 			with
 				WithTypeError (ul,p)->
-					if opt && List.length el < List.length args then
+					if opt && might_skip then
 						let e_def = skip name ul t p in
 						e_def :: loop (e :: el) args
 					else
@@ -364,7 +366,7 @@ let unify_field_call ctx fa el_typed el p inline =
 		if overload_kind = OverloadProper then maybe_check_access cf;
 		begin try
 			commit_delayed_display (attempt_call cf false)
-		with Error _ when ctx.com.display.dms_error_policy = EPIgnore ->
+		with Error _ when Common.ignore_error ctx.com ->
 			fail_fun();
 		end
 	| _ ->
@@ -414,7 +416,7 @@ class call_dispatcher
 	(p : pos)
 =
 	let is_set = match mode with MSet _ -> true | _ -> false in
-	let check_assign () = if is_set && ctx.com.display.dms_error_policy <> EPIgnore then invalid_assign p in
+	let check_assign () = if is_set && not (Common.ignore_error ctx.com) then invalid_assign p in
 
 object(self)
 

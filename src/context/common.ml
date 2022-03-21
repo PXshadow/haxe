@@ -358,6 +358,12 @@ type context = {
 
 exception Abort of string * pos
 
+let ignore_error com =
+	let b = com.display.dms_error_policy = EPIgnore in
+	if b then
+		if b then com.has_error <- true;
+	b
+
 (* Defines *)
 
 module Define = Define
@@ -788,6 +794,11 @@ let create cs version args =
 let is_diagnostics com = match com.report_mode with
 	| RMDiagnostics _ -> true
 	| _ -> false
+
+let disable_report_mode com =
+	let old = com.report_mode in
+	com.report_mode <- RMNone;
+	(fun () -> com.report_mode <- old)
 
 let log com str =
 	if com.verbose then com.print (str ^ "\n")

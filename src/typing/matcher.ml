@@ -270,10 +270,12 @@ module Pattern = struct
 		in
 		let catch_errors () =
 			let old = ctx.on_error in
+			let restore_report_mode = disable_report_mode ctx.com in
 			ctx.on_error <- (fun _ _ _ ->
 				raise Exit
 			);
 			(fun () ->
+				restore_report_mode();
 				ctx.on_error <- old
 			)
 		in
@@ -1510,7 +1512,7 @@ module TexprConverter = struct
 								begin match with_type,finiteness with
 								| WithType.NoValue,Infinite when toplevel -> None
 								| _,CompileTimeFinite when unmatched = [] -> None
-								| _ when ctx.com.display.DisplayMode.dms_error_policy = DisplayMode.EPIgnore -> None
+								| _ when ignore_error ctx.com -> None
 								| _ -> report_not_exhaustive !v_lookup e_subject unmatched
 								end
 							| Some e ->
@@ -1623,7 +1625,7 @@ module TexprConverter = struct
 						| None ->
 							if toplevel then
 								loop dt_rec params dt2
-							else if ctx.com.display.DisplayMode.dms_error_policy = DisplayMode.EPIgnore then
+							else if ignore_error ctx.com then
 								Some (mk (TConst TNull) (mk_mono()) dt2.dt_pos)
 							else
 								report_not_exhaustive !v_lookup e [(ConConst TNull,dt.dt_pos),dt.dt_pos]
