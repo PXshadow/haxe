@@ -315,6 +315,7 @@ enum abstract Platform(String) {
 	var Python = "python";
 	var Hl = "hl";
 	var Eval = "eval";
+	var Go = "go";
 }
 
 typedef Metadata = {

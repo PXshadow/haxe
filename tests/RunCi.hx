@@ -76,6 +76,8 @@ class RunCi {
 						runci.targets.Flash.run(args);
 					case Hl:
 						runci.targets.Hl.run(testArgs, args);
+					case Go:
+						runci.targets.Go.run(args);
 					case t:
 						throw new Exception("unknown target: " + t);
 				}
