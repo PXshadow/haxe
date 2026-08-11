@@ -1,6 +1,8 @@
 package unit;
 
 import haxe.ds.List;
+import sys.FileSystem;
+import sys.io.File;
 import unit.Test.*;
 import utest.Runner;
 import utest.ui.Report;
@@ -127,10 +129,13 @@ function main() {
 	report.displayHeader = AlwaysShowHeader;
 	report.displaySuccessResults = NeverShowSuccessResults;
 	var success = true;
+	var successes:Array<String> = [];
 	runner.onProgress.add(function(e) {
+		var name = e.result.pack + (e.result.pack == "" ? "" : ".") + e.result.cls + "." + e.result.method;
 		for (a in e.result.assertations) {
 			switch a {
 				case Success(pos):
+					successes.push(name + "_" + pos.lineNumber);
 				case Warning(msg):
 				case Ignore(reason):
 				case _:
@@ -142,6 +147,37 @@ function main() {
 			untyped js.Browser.window.success = success;
 		};
 		#end
+	});
+	
+	var fileName = "unittests.txt";
+	runner.onComplete.add(_ -> {
+		successes.sort((a, b) -> a > b ? 1 : -1);
+		if (FileSystem.exists(fileName)) {
+			var prev:Array<String> = File.getContent(fileName).split("\n");
+			var regressions = [];
+			// add regressions
+			for (t in prev) {
+				if (successes.indexOf(t) == -1) {
+					regressions.push(t);
+				}
+			}
+			// print regressions if present, and exit
+			if (regressions.length > 0) {
+				Sys.println("REGRESSIONS:");
+				for (t in regressions) {
+					Sys.println("  " + t);
+				}
+				Sys.exit(1);
+			}else{
+				File.saveContent(fileName, successes.join("\n"));
+				Sys.exit(0);
+			}
+		}else{
+			Sys.println("Creating new " + fileName);
+			Sys.println("if the cache has expired, make sure no regressions have occured since the last working commit and this new one.");
+			File.saveContent(fileName, successes.join("\n"));
+			Sys.exit(1);
+		}
 	});
 	#if (sys || nodejs)
 	if (verbose)
