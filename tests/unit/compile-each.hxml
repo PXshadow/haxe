@@ -6,9 +6,9 @@
 --resource res2.bin@re/s?!%[]))("'1.bin
 --resource serializedValues.txt
 --macro Macro.init()
---dce full
+# --dce full
 -lib utest
--D analyzer-optimize
--D analyzer-user-var-fusion
+# -D analyzer-optimize
+# -D analyzer-user-var-fusion
 -D message.reporting=pretty
 -D haxe-next
