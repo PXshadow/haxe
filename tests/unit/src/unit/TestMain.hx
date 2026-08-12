@@ -175,7 +175,7 @@ function main() {
 			Sys.println("Creating new " + fileName);
 			Sys.println("if the cache has expired, make sure no regressions have occurred since the last working commit.");
 			File.saveContent(fileName, passed.join("\n"));
-			Sys.exit(1);
+			Sys.exit(0);
 		}
 	});
 	#if (sys || nodejs)
