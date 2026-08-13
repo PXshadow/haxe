@@ -10,6 +10,19 @@ import utest.ui.Report;
 final asyncWaits = new Array<haxe.PosInfos>();
 final asyncCache = new Array<() -> Void>();
 
+function epochMillis():String {
+	var v = Math.ffloor(Date.now().getTime());
+	if (v <= 0)
+		return "0";
+	var digits = "";
+	while (v >= 1) {
+		var d = Std.int(v - Math.ffloor(v / 10) * 10);
+		digits = String.fromCharCode("0".code + d) + digits;
+		v = Math.ffloor(v / 10);
+	}
+	return digits;
+}
+
 @:access(unit.Test)
 function main() {
 	#if js
@@ -130,19 +143,29 @@ function main() {
 	report.displaySuccessResults = NeverShowSuccessResults;
 	var success = true;
 	var passed:Array<String> = [];
+	var errored = 0;
+	var total = 0;
 	runner.onProgress.add(function(e) {
 		var name = e.result.pack + (e.result.pack == "" ? "" : ".") + e.result.cls + "." + e.result.method;
+		total++;
 		var methodPassed = true;
+		var methodErrored = false;
 		for (a in e.result.assertations) {
 			switch a {
 				case Success(_), Warning(_), Ignore(_):
+				case Failure(_, _):
+					methodPassed = false;
+					success = false;
 				case _:
 					methodPassed = false;
+					methodErrored = true;
 					success = false;
 			}
 		}
 		if (methodPassed)
 			passed.push(name);
+		else if (methodErrored)
+			errored++;
 		#if js
 		if (js.Browser.supported && e.totals == e.done) {
 			untyped js.Browser.window.success = success;
@@ -151,8 +174,24 @@ function main() {
 	});
 	
 	var fileName = "unittests.txt";
+	var statsFile = "unittests.json";
+	function writeStats() {
+		// total = passed + failed + errored; failed is assertion failures only
+		var failed = total - passed.length - errored;
+		var ms = epochMillis();
+		var record = '{"time":$ms,"total":$total,"passed":${passed.length},"failed":$failed,"errored":$errored}';
+		var records = [];
+		if (FileSystem.exists(statsFile)) {
+			var prev = StringTools.trim(File.getContent(statsFile));
+			if (prev.length > 2) // more than "[]"
+				records.push(prev.substring(1, prev.length - 1));
+		}
+		records.push(record);
+		File.saveContent(statsFile, "[" + records.join(",") + "]");
+	}
 	runner.onComplete.add(_ -> {
 		passed.sort((a, b) -> a > b ? 1 : -1);
+		writeStats();
 		if (FileSystem.exists(fileName)) {
 			var prev:Array<String> = File.getContent(fileName).split("\n");
 			var regressions = [];
