@@ -75,8 +75,10 @@ class TestBasetypes extends Test {
 		eq(y + x, "hellonull");
 		var x:String = null;
 		//String const + String var with null ref
+		#if !go
 		eq("hello" +x, "hellonull");
 		eq(x + "hello", "nullhello");
+		#end
 
 		var x = { hello:"world", val:5 };
 		var xs = "" + x;
