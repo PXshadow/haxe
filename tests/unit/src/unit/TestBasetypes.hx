@@ -90,7 +90,10 @@ class TestBasetypes extends Test {
 		h = xs.indexOf("val");
 		t(h != -1);
 		t(xs.indexOf("5", h) != -1);
+		// Go target, the order of fields is unspecified and can change per print
+		#if !go
 		eq(x + "", xs);
+		#end
 
 		// Let's just make sure this is not 10 on any platform.
 		eq(5 + "5", "55");
