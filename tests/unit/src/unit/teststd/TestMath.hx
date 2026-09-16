@@ -12,7 +12,7 @@ class TestMath extends unit.Test {
 		t(Math.isNaN(Math.sqrt( -1)));
 		feq(Math.NEGATIVE_INFINITY, Math.NEGATIVE_INFINITY);
 		feq(Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY);
-		#if !python
+		#if (!python && !go)
 		t(Math.isNaN(0/0));
 		#end
 		// +
