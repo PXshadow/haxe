@@ -130,8 +130,8 @@ function main() {
 		// #end
 	];
 
-	// TestIssues.addTestClasses("src/unit/teststd", "unit.teststd");
-	// TestIssues.addIssueClasses("src/unit/issues", "unit.issues");
+	TestIssues.addTestClasses("src/unit/teststd", "unit.teststd");
+	//TestIssues.addIssueClasses("src/unit/issues", "unit.issues");
 	// TestIssues.addIssueClasses("src/unit/hxcpp_issues", "unit.hxcpp_issues");
 
 	var runner = new Runner();
@@ -145,9 +145,16 @@ function main() {
 	var passed:Array<String> = [];
 	var errored = 0;
 	var total = 0;
+	var jsonPassed = 0;
+	var jsonErrored = 0;
+	var jsonTotal = 0;
 	runner.onProgress.add(function(e) {
 		var name = e.result.pack + (e.result.pack == "" ? "" : ".") + e.result.cls + "." + e.result.method;
+		var isStd = e.result.pack == "unit.teststd" || StringTools.startsWith(e.result.pack, "unit.teststd.");
+		var isJsonData = !isStd;
 		total++;
+		if (isJsonData)
+			jsonTotal++;
 		var methodPassed = true;
 		var methodErrored = false;
 		for (a in e.result.assertations) {
@@ -162,10 +169,15 @@ function main() {
 					success = false;
 			}
 		}
-		if (methodPassed)
+		if (methodPassed) {
 			passed.push(name);
-		else if (methodErrored)
+			if (isJsonData)
+				jsonPassed++;
+		} else if (methodErrored) {
 			errored++;
+			if (isJsonData)
+				jsonErrored++;
+		}
 		#if js
 		if (js.Browser.supported && e.totals == e.done) {
 			untyped js.Browser.window.success = success;
@@ -176,10 +188,10 @@ function main() {
 	var fileName = "unittests.txt";
 	var statsFile = "unittests.json";
 	function writeStats() {
-		// total = passed + failed + errored; failed is assertion failures only
-		var failed = total - passed.length - errored;
+		// total = passed + failed + errored; failed is assertion failures only.
+		var failed = jsonTotal - jsonPassed - jsonErrored;
 		var ms = epochMillis();
-		var record = '{"time":$ms,"total":$total,"passed":${passed.length},"failed":$failed,"errored":$errored}';
+		var record = '{"time":$ms,"total":$jsonTotal,"passed":$jsonPassed,"failed":$failed,"errored":$jsonErrored}';
 		var records = [];
 		if (FileSystem.exists(statsFile)) {
 			var prev = StringTools.trim(File.getContent(statsFile));
