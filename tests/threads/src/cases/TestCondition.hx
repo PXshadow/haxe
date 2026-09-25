@@ -43,12 +43,14 @@ class TestCondition extends ThreadTestBase {
 		cpp.vm.Gc.run(true);
 		#elseif hl
 		hl.Gc.major();
+		#elseif go
+		go.Runtime.GC();
 		#elseif interp
 		eval.vm.Gc.full_major();
 		#elseif neko
 		neko.vm.Gc.run(true);
 		#end
-
+		
 		cond.signal();
 		cond.release();
 
