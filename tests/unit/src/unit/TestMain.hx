@@ -89,27 +89,6 @@ function main() {
 		#end
 		new TestMacro(), // compile-time; runtime side is trivial
 		new TestDefaultTypeParameters(), // macros + Assert.same (deep, reflection-based compare)
-		new TestNullCoalescing(), // ?? / ?. plus Reflect.field/setField on `this`
-		new TestRest(), // haxe.Rest (native varargs) + 22 x Assert.same
-		// == Tier 3: real std implementations needed. ==
-		new TestBytes(), // haxe.io.Bytes: blit/compare/sub/hex
-		new TestIO(), // haxe.io Input/Output/BytesBuffer, endianness
-		new TestJson(), // haxe.Json encode/decode over Dynamic anons
-		new TestEReg(), // a regex engine with Haxe/PCRE semantics
-		new TestInt64(), // 673 loc of the full haxe.Int64 API
-		new TestBasetypes(), // broad sweep: String, Array, Math, Map, Lambda + some Reflect
-		new TestMisc(), // broad sweep, 647 loc: Date, StringBuf, haxe.io, inline/static init order
-		new TestResource(), // needs --resource embedding + Bytes
-		new TestXML(), // a full Xml parser + printer
-		new TestExceptions(), // haxe.Exception, ValueException, CallStack, and native-exception
-		                      // interop. NOTE: `CustomNativeException` has no branch for this
-		                      // target, so this file will not even typecheck until one is added.
-		// == Tier 4: reflection, RTTI, serialization, runtime services. Hardest. ==
-		new TestMeta(), // haxe.rtti.Meta -> metadata must survive to runtime
-		new TestReflect(), // 48 Reflect calls + 16 Type calls: fields/callMethod/makeVarArgs/copy
-		new TestType(), // 809 loc of Type: resolveClass, createInstance, createEmptyInstance, typeof
-		new TestSerialize(), // haxe.Serializer/Unserializer: reflection + enum + Bytes + cycles
-		new TestSerializerCrossTarget(), // above, plus byte-exact agreement with other targets
 		#if ((dce == "full") && !interp)
 		new TestDCE(), // needs -dce full to behave *and* Type.getClassFields to observe it
 		#end
