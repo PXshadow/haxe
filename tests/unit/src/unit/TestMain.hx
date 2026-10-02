@@ -5,7 +5,9 @@ import sys.FileSystem;
 import sys.io.File;
 import unit.Test.*;
 import utest.Runner;
+#if utest
 import utest.ui.Report;
+#end
 
 final asyncWaits = new Array<haxe.PosInfos>();
 final asyncCache = new Array<() -> Void>();
@@ -46,30 +48,42 @@ function main() {
 	tf.mouseEnabled = true;
 	#end
 	var classes = [
-		// == Tier 1: pure language / codegen. No std beyond the baseline. ==
-		new TestNull(), // Null<Int> vs Int comparison
-		new TestNumericSeparator(), // literal parsing only, compile-time
-		new TestLocalStatic(), // `static var` inside a function
-		new TestOverloadsForEveryone(), // `overload extern inline`, resolved at compile time
-		new TestOrder(), // `using` + enum shadowing resolution order
-		new TestFieldVariance(), // all HelperMacros.typeError, i.e. compile-time only
-		new TestConstrainedMonomorphs(), // monomorph constraint inference
-		new TestGeneric(), // @:generic expansion
-		new TestNaN(), // Math.NaN comparison semantics
-		new TestLocals(), // closure capture semantics
-		new TestArrowFunctions(), // closures, no std
-		new TestSyntaxModule(), // gated to js/php/python: compiles to an empty case here
-		new TestInterface(), // interface dispatch + Std.isOfType
-		new TestCasts(), // runtime `cast(v, I)` checks -> needs type checks + throw
-		new TestNumericSuffixes(), // i32/u32/i64/f64 literals + Int64 toString
-		new TestOps(), // 427 loc of operator semantics (shifts, int division, overflow)
-		new TestNumericCasts(), // 1525 loc, Int64/UInt conversion matrix. No std, but a big semantics grind
-		// == Tier 2: light std -- collections, iterators, pattern matching, macros. ==
-		new TestDefaultArgs(), // non-const default args + Int64.toStr
-		new TestMapComprehension(), // Map literal comprehension
-		new TestHashMap(), // haxe.ds.HashMap + user hashCode/equals
-		new TestKeyValueIterator(), // StringMap, key=>value iterators, Reflect.compare
-		new TestGADT(), // enum runtime + exhaustive matching
+		new TestOps(),
+		new TestBasetypes(),
+		new TestNumericSuffixes(),
+		new TestNumericSeparator(),
+		new TestExceptions(),
+		new TestBytes(),
+		new TestIO(),
+		new TestLocals(),
+		new TestLocalStatic(),
+		new TestEReg(),
+		new TestXML(),
+		new TestMisc(),
+		new TestJson(),
+		new TestResource(),
+		new TestInt64(),
+		new TestDefaultArgs(),
+		new TestReflect(),
+		new TestSerialize(),
+		new TestSerializerCrossTarget(),
+		new TestMeta(),
+		new TestType(),
+		new TestOrder(),
+		new TestGADT(),
+		new TestGeneric(),
+		new TestArrowFunctions(),
+		new TestCasts(),
+		new TestSyntaxModule(),
+		new TestNull(),
+		new TestNullCoalescing(),
+		new TestNumericCasts(),
+		new TestHashMap(),
+		new TestRest(),
+		#if (!php && !lua)
+		/// This is annoying and causes spurious CI failures. Let's just make an effort to not break it!
+		// new TestHttps(),
+		#end
 		#if !no_pattern_matching
 		new TestMatch(), // full pattern matcher: enum params, Std.string of enums
 		#end
@@ -139,6 +153,7 @@ function main() {
 	for (c in classes) {
 		runner.addCase(c);
 	}
+	#if utest
 	var report = Report.create(runner);
 	report.displayHeader = AlwaysShowHeader;
 	report.displaySuccessResults = NeverShowSuccessResults;
@@ -235,6 +250,7 @@ function main() {
 		runner.onTestStart.add(function(test) {
 			Sys.println(' $test...'); // TODO: need utest success state for this
 		});
+	#end
 	#end
 	runner.run();
 

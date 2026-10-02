@@ -208,7 +208,7 @@ let check_module sctx com m_path m_extra p =
 					ServerMessage.unchanged_content com "" file;
 				end else begin
 					ServerMessage.not_cached com "" m_path;
-					if m_extra.m_kind = MFake then Hashtbl.remove com.fake_modules (Path.UniqueKey.lazy_key m_extra.m_file);
+					if m_extra.m_kind = MFake then (com.cs#get_context m_extra.m_sign)#remove_fake_module (Path.UniqueKey.lazy_key m_extra.m_file);
 					raise (Dirty (FileChanged file))
 				end
 			end
@@ -438,7 +438,7 @@ let rec add_modules sctx com delay (m : module_def) (from_binary : bool) (p : po
 				) m.m_types;
 				(* The main module gets added when reading hxb already, so let's not add it again. Note that we
 				   can't set its m_added ahead of time because we want the rest of the logic here to run. *)
-				if not from_binary || m != m then
+				if not from_binary then
 					com.module_lut#add m.m_path m;
 				handle_cache_bound_objects com m.m_extra.m_cache_bound_objects;
 				let typing_mode = get_typing_mode com m.m_extra in
@@ -477,7 +477,7 @@ and type_module sctx com delay mpath p =
 	let t = Timer.start_timer com.timer_ctx ["server";"module cache"] in
 	let cc = CommonCache.get_cache com in
 	let skip m_path reason =
-		ServerMessage.skipping_dep com "" (m_path,(Printer.s_module_skip_reason reason));
+		ServerMessage.skipping_dep com "" (m_path,(fun () -> Printer.s_module_skip_reason reason));
 		BadModule reason
 	in
 	let add_modules from_binary m =
