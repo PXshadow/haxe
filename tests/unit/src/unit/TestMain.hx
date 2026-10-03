@@ -85,42 +85,43 @@ function main() {
 		// new TestHttps(),
 		#end
 		#if !no_pattern_matching
-		new TestMatch(), // full pattern matcher: enum params, Std.string of enums
+		new TestMatch(),
 		#end
-		new TestMacro(), // compile-time; runtime side is trivial
-		new TestDefaultTypeParameters(), // macros + Assert.same (deep, reflection-based compare)
+		#if jvm
+		new TestJava(),
+		#end
+		#if lua
+		new TestLua(),
+		#end
+		#if python
+		new TestPython(),
+		#end
+		#if hl
+		new TestHL(),
+		#end
+		#if php
+		new TestPhp(),
+		#end
+		#if jvm
+		new TestOverloads(),
+		#end
+		new TestOverloadsForEveryone(),
+		new TestInterface(),
+		new TestNaN(),
 		#if ((dce == "full") && !interp)
-		new TestDCE(), // needs -dce full to behave *and* Type.getClassFields to observe it
+		new TestDCE(),
 		#end
-		// #if (!flash && !hl && !cppia)
-		// new TestCoroutines(), // 648 loc, coroutine state-machine transform + suspension
-		// #end
-		// new TestGcFinalizer(), // GC finalizer / weak-reference hooks
-		// #if (!php && !lua)
-		// /* This is annoying and causes spurious CI failures. Let's just make an effort to
-		// 	not break it! */
-		// // new TestHttps(), // sockets + TLS
-		// #end
-		// // new TestUnspecified(), // deliberately target-specific/unspecified behaviour
-		// == Gated to other targets: never runs here, ignore for ordering. ==
-		// #if jvm
-		// new TestJava(),
-		// #end
-		// #if lua
-		// new TestLua(),
-		// #end
-		// #if python
-		// new TestPython(),
-		// #end
-		// #if hl
-		// new TestHL(),
-		// #end
-		// #if php
-		// new TestPhp(),
-		// #end
-		// #if jvm
-		// new TestOverloads(),
-		// #end
+		new TestMapComprehension(),
+		new TestMacro(),
+		new TestGcFinalizer(),
+		new TestKeyValueIterator(),
+		new TestFieldVariance(),
+		new TestConstrainedMonomorphs(),
+		new TestDefaultTypeParameters(),
+		#if (!flash && !hl && !cppia)
+		// new TestCoroutines(),
+		#end
+		// new TestUnspecified(),
 	];
 	#if teststd
 	TestIssues.addTestClasses("src/unit/teststd", "unit.teststd");
