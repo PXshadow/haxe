@@ -126,7 +126,10 @@ function main() {
 	#if teststd
 	TestIssues.addTestClasses("src/unit/teststd", "unit.teststd");
 	#end
-	//TestIssues.addIssueClasses("src/unit/issues", "unit.issues");
+	
+	#if testissues
+	TestIssues.addIssueClasses("src/unit/issues", "unit.issues");
+	#end
 	// TestIssues.addIssueClasses("src/unit/hxcpp_issues", "unit.hxcpp_issues");
 
 	var runner = new Runner();
