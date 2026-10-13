@@ -1,5 +1,6 @@
 compile-each.hxml
 --main unit.TestMain
+--xml bin/go/target.xml
 -D go-sourceline-comments
 -L hx2go
 --custom-target go=bin/go
