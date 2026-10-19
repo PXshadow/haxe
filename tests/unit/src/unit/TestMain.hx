@@ -150,7 +150,7 @@ function main() {
 	runner.onProgress.add(function(e) {
 		var name = e.result.pack + (e.result.pack == "" ? "" : ".") + e.result.cls + "." + e.result.method;
 		var isStd = e.result.pack == "unit.teststd" || StringTools.startsWith(e.result.pack, "unit.teststd.");
-		var isJsonData = !isStd;
+		var isJsonData = true;
 		total++;
 		if (isJsonData)
 			jsonTotal++;
