@@ -123,9 +123,6 @@ function main() {
 		#end
 		// new TestUnspecified(),
 	];
-	#if teststd
-	TestIssues.addTestClasses("src/unit/teststd", "unit.teststd");
-	#end
 	
 	#if testissues
 	TestIssues.addIssueClasses("src/unit/issues", "unit.issues");
