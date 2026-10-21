@@ -69,7 +69,9 @@ class TestArguments extends utest.Test {
 	});
 
 	static public var bin:String =
-	#if interp
+	#if go
+		"bin/go/testArguments/main/main" + (Sys.systemName() == "Windows" ? ".exe" : "");
+	#elseif interp
 		"bin/eval/TestArguments.hxb";
 	#elseif neko
 		"bin/neko/TestArguments.n";

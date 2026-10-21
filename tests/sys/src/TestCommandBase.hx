@@ -17,7 +17,9 @@ class TestCommandBase extends utest.Test {
 		Assert.equals(0, exitCode);
 
 		var exitCode =
-			#if (macro || interp)
+			#if go
+				run(bin, args);
+			#elseif (macro || interp)
 				run("haxe", ["--hxb-lib", bin, "--run", "TestArguments"].concat(args));
 			#elseif cpp
 				#if cppia
@@ -111,7 +113,9 @@ class TestCommandBase extends utest.Test {
 		for (code in codes) {
 			var args = [Std.string(code)];
 			var exitCode =
-				#if (macro || interp)
+				#if go
+					run(bin, args);
+				#elseif (macro || interp)
 					run("haxe", ["--hxb-lib", bin, "--run", "ExitCode"].concat(args));
 				#elseif cpp
 					#if cppia

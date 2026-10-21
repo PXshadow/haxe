@@ -10,7 +10,9 @@ import UtilityProcess.runUtility;
 
 class TestUnicode extends utest.Test {
 	static var BIN_SYMLINK =
-#if cpp
+#if go
+		"bin-go";
+#elseif cpp
 		#if cppia
 			"bin-cppia";
 		#elseif debug
