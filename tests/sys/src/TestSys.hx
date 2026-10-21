@@ -102,7 +102,9 @@ class TestSys extends TestCommandBase {
 		Assert.isTrue(sys.FileSystem.exists(p));
 
 		Assert.isTrue(StringTools.endsWith(p,
-		#if interp
+		#if go
+			"main" + (Sys.systemName() == "Windows" ? ".exe" : "")
+		#elseif interp
 			"Main.hx"
 		#elseif neko
 			 "sys.n"
