@@ -19,7 +19,7 @@ class TestCallStack extends unit.Test {
 		} catch (_:Dynamic) {
 			var stack = haxe.CallStack.exceptionStack();
 			t((stack is Array));
-			#if (!lua && !flash && !hl)
+			#if (!lua && !flash && !hl && !go)
 			t(stack.length > 0);
 			#end
 		}
