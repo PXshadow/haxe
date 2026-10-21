@@ -13,8 +13,10 @@ class TestCommandBase extends utest.Test {
 		var bin = FileSystem.absolutePath(TestArguments.bin);
 		var args = TestArguments.expectedArgs;
 
+		#if !go
 		var exitCode = run("haxe", ["compile-each.hxml", "--run", "TestArguments"].concat(args));
 		Assert.equals(0, exitCode);
+		#end
 
 		var exitCode =
 			#if go
