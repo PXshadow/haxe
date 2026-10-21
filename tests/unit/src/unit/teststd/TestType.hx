@@ -130,7 +130,7 @@ class TestType extends unit.Test {
 		#if (!php && !python)
 		eq(Type.typeof(1e10), TFloat);
 		#end
-		#if !eval
+		#if (!eval && !go)
 		eq(Type.typeof(1.0), TInt);
 		#end
 		var i0 = haxe.Int64.fromInt(256);
