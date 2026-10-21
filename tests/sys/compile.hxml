@@ -5,6 +5,7 @@
 --next compile-cpp.hxml
 --next compile-cppia.hxml
 --next compile-jvm.hxml
+--next compile-go.hxml
 --next compile-php.hxml
 --next compile-hl.hxml
 --next compile-js.hxml

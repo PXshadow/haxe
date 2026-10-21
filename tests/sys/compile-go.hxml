@@ -1,0 +1,21 @@
+compile-each.hxml
+-D go-sourceline-comments
+
+--main Main
+-L hx2go
+--custom-target go=bin/go/sys
+
+--next
+--main TestArguments
+-L hx2go
+--custom-target go=bin/go/testArguments
+
+--next
+--main ExitCode
+-L hx2go
+--custom-target go=bin/go/exitCode
+
+--next
+--main UtilityProcess
+-L hx2go
+--custom-target go=bin/go/utilityProcess
