@@ -78,8 +78,6 @@ class TestCommandBase extends utest.Test {
 				var exitCode = try {
 					run(path, [Std.string(random)]);
 				} catch (e:Dynamic) {
-					trace(e);
-					trace(name);
 					throw e;
 				}
 				if (exitCode != random)
