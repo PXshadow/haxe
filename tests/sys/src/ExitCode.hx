@@ -8,7 +8,7 @@ import haxe.io.*;
 class ExitCode {
 	static public var bin:String =
 	#if go
-		"bin/go/exitCode/main/main" + (Sys.systemName() == "Windows" ? ".exe" : "");
+		Sys.getCwd() + "bin/go/exitCode/main/main" + (Sys.systemName() == "Windows" ? ".exe" : "");
 	#elseif interp
 		"bin/eval/ExitCode.hxb";
 	#elseif neko
