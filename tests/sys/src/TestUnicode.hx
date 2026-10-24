@@ -126,11 +126,7 @@ class TestUnicode extends utest.Test {
 
 	function setupClass() {
 		FileSystem.createDirectory("temp-unicode");
-		#if TEST_INVALID_UNICODE_FS
-		Sys.command("python3", ["gen_test_res.py", "TEST_INVALID_UNICODE_FS"]);
-		#else
-		Sys.command("python3", ["gen_test_res.py"]);
-		#end
+		GenTestRes.generate();
 	}
 
 	function teardownClass() {
