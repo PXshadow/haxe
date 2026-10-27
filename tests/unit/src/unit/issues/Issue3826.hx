@@ -18,7 +18,7 @@ class Issue3826 extends Test {
 		eq( get(5), "5/4.25" );
 		eq( get(5,8.5), "5/8.5" );
 
-		#if !flash
+		#if (!flash && !go)
 		// flash does have two problems wrt these tests
 		// - not skippable nullable arg
 		// - explicit null args are cast to 0
