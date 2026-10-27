@@ -73,7 +73,13 @@ class ExitCode {
 			FileSystem.createDirectory("bin");
 
 		#if go
-		File.copy(bin, binPath);
+		var cpCmd = "cp";
+		if (Sys.systemName() == "Windows")
+			cpCmd = "copy";	
+		var ec = Sys.command(cpCmd, [bin, binPath]);
+		if (ec != 0) {
+			throw "set-up failed: cannot copy ExitCode";
+		}
 		#else
 		switch (Sys.systemName()) {
 			case "Windows":
