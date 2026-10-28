@@ -199,13 +199,17 @@ function main() {
 		records.push(record);
 		File.saveContent(statsFile, "[" + records.join(",") + "]");
 	}
-	runner.onComplete.add(_ -> {
+	// run before Sys.exit gets called on complete
+	var prevHandler:Dynamic = (cast report).handler;
+	report.setHandler(r -> {
+		if (prevHandler != null) prevHandler(r);
 		passed.sort((a, b) -> a > b ? 1 : -1);
 		writeStats();
 		if (FileSystem.exists(fileName)) {
 			var prev:Array<String> = File.getContent(fileName).split("\n");
 			var regressions = [];
 			for (t in prev) {
+				if (t == "") continue;
 				if (passed.indexOf(t) == -1) {
 					regressions.push(t);
 				}
