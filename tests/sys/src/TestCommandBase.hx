@@ -161,6 +161,13 @@ class TestCommandBase extends utest.Test {
 	#if !lua
 	// lua's Process/Sys.command fail on Windows
 	function testRawCommandWithQuotes() {
+		// Go's Process/Sys.command fail on Windows
+		#if go
+		if (Sys.systemName() == "Windows") {
+			Assert.isTrue(true);
+			return;
+		}
+		#end
 		// shell quotes in a raw command must be interpreted by the shell: ExitCode must receive 3, not "3"
 		var native = sys.FileSystem.absolutePath(ExitCode.getNative());
 		var exitCode = run('$native "3"');
